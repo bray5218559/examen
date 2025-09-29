@@ -1,0 +1,72 @@
+@startuml
+title Examen – Jerarquía de Empleados (B16)
+
+abstract class Empleado_B16 {
+  - rfc: String
+  - apellidos: String
+  - nombres: String
+  + getRfc(): String
+  + setRfc(rfc: String)
+  + getApellidos(): String
+  + setApellidos(apellidos: String)
+  + getNombres(): String
+  + setNombres(nombres: String)
+  + info(): String
+  {abstract} ingresos(): double
+  {abstract} descuento(): double
+  {abstract} sueldoNeto(): double
+}
+
+class EmpleadoVendedor_B16 {
+  - montoVendido: double
+  - tasaComision: double
+  + getMontoVendido(): double
+  + setMontoVendido(monto: double)
+  + getTasaComision(): double
+  + setTasaComision(tasa: double)
+  + ingresos(): double
+  + bonificacion(): double
+  + descuento(): double
+  + sueldoNeto(): double
+}
+
+class EmpleadoPermanente_B16 {
+  - sueldoBase: double
+  - numSeguroSocial: String
+  + getSueldoBase(): double
+  + setSueldoBase(sueldo: double)
+  + getNumSeguroSocial(): String
+  + setNumSeguroSocial(nss: String)
+  + ingresos(): double
+  + descuento(): double
+  + sueldoNeto(): double
+}
+
+Empleado_B16 <|-- EmpleadoVendedor_B16
+Empleado_B16 <|-- EmpleadoPermanente_B16
+
+note right of EmpleadoVendedor_B16
+  Reglas:
+  - ingresos = montoVendido * tasaComision
+  - bonificación:
+      < 1000 -> 0
+      1000..5000 -> 5% de ingresos
+      > 5000 -> 10% de ingresos
+  - descuento:
+      ingresos < 1000 -> 11%
+      si no -> 15%
+  - sueldoNeto = ingresos + bonificación - descuento
+end note
+
+note right of EmpleadoPermanente_B16
+  Reglas:
+  - ingresos = sueldoBase
+  - descuento = 11% del sueldoBase
+  - sueldoNeto = ingresos - descuento
+end note
+
+note bottom of Empleado_B16
+  Validación (excepciones):
+  - No permitir salarios < 150
+end note
+@enduml
